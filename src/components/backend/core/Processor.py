@@ -260,12 +260,22 @@ class Processor:
 									self.log.debug(f"🔴 Ricerca automatica url per la stagione {season['number']} della serie '{elem['title']}': nessun risultato trovato.")
 									return False
 
-							self.log.warning(f"🟢 Ricerca automatica url per la stagione {season['number']} della serie '{elem['title']}': {res['url']}")
-							# aggiungo ciò che ho trovato
-							season["urls"].append(res["url"])
+							# res è una lista di dizionari con 'name' e 'url'
+							urls = [r["url"] for r in res]
+							names = [r["name"] for r in res]
+							
+							if len(urls) == 1:
+								self.log.warning(f"🟢 Ricerca automatica url per la stagione {season['number']} della serie '{elem['title']}': {urls[0]}")
+							else:
+								self.log.warning(f"🟢 Ricerca automatica url per la stagione {season['number']} della serie '{elem['title']}': trovati {len(urls)} url (split cour)")
+								for name, url in zip(names, urls):
+									self.log.warning(f"   - {name}: {url}")
+							
+							# aggiungo tutti gli url trovati
+							season["urls"].extend(urls)
 
-							# Adesso devo aggiornare la tabella, aggiungendo l'url
-							self.table.appendUrls(title, season['number'], [res["url"]])
+							# Adesso devo aggiornare la tabella, aggiungendo gli url
+							self.table.appendUrls(title, season['number'], urls)
 							return True
 
 		# Aggiungo gli url alle stagioni
