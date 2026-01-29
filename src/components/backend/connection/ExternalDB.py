@@ -123,7 +123,14 @@ class ExternalDB:
 		# Se non ho trovato nulla, provo con il titolo + numero stagione (es. "Fire Force 3")
 		if len(res) == 0 and season > 1:
 			self.log.info(f"Nessun risultato con '{title}', provo con '{title} {season}'")
-			res = self._search_with_variations(f"{title} {season}", mal_ids)
+			res = self._search_with_variations(f"{title} {season}", mal_ids)	
+		if 0 < len(res) < len(mal_ids) and season > 1:
+			found_ids = set(r["malId"] for r in res)
+			base = res[0]["name"].rsplit(' ', 1)[0] if res[0]["name"][-1].isdigit() else res[0]["name"]
+			if base != title:
+				self.log.info(f"Trovati {len(res)}/{len(mal_ids)}, provo con '{base} {season}'")
+				extra = self._search_with_variations(f"{base} {season}", mal_ids)
+				res.extend(r for r in extra if r["malId"] not in found_ids)
 
 		# Se non ho trovato nulla ritorno None
 		if len(res) == 0: return None
