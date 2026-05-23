@@ -6,10 +6,11 @@ interface ContainerProps {
     title: string,
     version: string,
     navigatorState?: [boolean, (state:boolean)=> void]
+    onRescan?: () => void,
 	children?: ReactNode,
 }
 
-export function Container({title, version, navigatorState, children}:ContainerProps) {
+export function Container({title, version, navigatorState, onRescan, children}:ContainerProps) {
 
     return (<>
         <header>
@@ -17,6 +18,11 @@ export function Container({title, version, navigatorState, children}:ContainerPr
             <a className="btn" id="donate" href="https://github.com/sponsors/MainKronos" target="_blank">
                 <i>favorite</i>
             </a>
+            {onRescan &&
+                <button id="rescan" onClick={onRescan} title="Forza scansione">
+                    <i>refresh</i>
+                </button>
+            }
             {navigatorState &&
                 <button onClick={() => navigatorState[1](!navigatorState[0])}>
                     <i>menu</i>

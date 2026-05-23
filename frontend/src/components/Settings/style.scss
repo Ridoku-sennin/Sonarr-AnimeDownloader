@@ -23,16 +23,22 @@ section#settings {
     }
 
     >*:nth-child(5) {
+        grid-area: parallel_dl;
+    }
+
+    >*:nth-child(6) {
         grid-area: restart_btn;
     }
 
-    grid-template-areas: "log_level tag_mode other"
-    "restart_btn scan_interval other";
+    grid-template-areas:
+        "log_level tag_mode other"
+        "scan_interval parallel_dl other"
+        "restart_btn restart_btn other";
 
     @media screen and (max-width: 1000px) {
         grid-template-areas:
             "log_level tag_mode"
-            "scan_interval scan_interval"
+            "scan_interval parallel_dl"
             "other restart_btn";
     }
 
@@ -41,6 +47,7 @@ section#settings {
             "log_level"
             "tag_mode"
             "scan_interval"
+            "parallel_dl"
             "other"
             "restart_btn";
     }

@@ -6,3 +6,4 @@ export { Badge } from './Badge';
 export { Card } from './Card';
 export { Settings } from './Settings';
 export {LogViewer} from './LogViewer'
+export { Downloads } from './Downloads';

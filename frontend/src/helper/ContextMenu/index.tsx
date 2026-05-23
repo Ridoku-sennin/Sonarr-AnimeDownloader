@@ -12,7 +12,7 @@ class ContextMenu {
         document.addEventListener('click', this.hide);
     }
 
-    hide = (event:Event) => {
+    hide = (_event?:Event) => {
         this.menu.classList.remove('active');
         while(this.menu.firstChild) this.menu.removeChild(this.menu.firstChild);
     }
@@ -20,7 +20,7 @@ class ContextMenu {
     show = (event:MouseEvent, callbacks:{[label:string]: EventListener}) => {
         event.preventDefault();
 
-        if(this.menu.classList.contains('active')) this.hide(event);
+        if(this.menu.classList.contains('active')) this.hide();
 
         Object.entries(callbacks).map(([label, callback]) => {
             const li = document.createElement('li');

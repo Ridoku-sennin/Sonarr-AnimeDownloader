@@ -77,13 +77,17 @@ details {
                 border: 0;
             }
 
-            >form {
-                >input[type=text] {
+            >span.editable {
+                >input[type=text],
+                >input[type=number] {
                     text-align: center;
                     border: 0;
                     width: 108.98px;
                     padding: 0;
-                    margin: 0 -50px
+                    margin: 0 -50px;
+                    background: transparent;
+                    color: $text-color;
+                    outline: none;
                 }
             }
 
@@ -98,8 +102,8 @@ details {
         }
     }
 
-    form {
-        display: inline;
+    span.editable {
+        display: inline-flex;
         flex-grow: 1;
         @extend %input;
     }

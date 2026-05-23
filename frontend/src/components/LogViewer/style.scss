@@ -1,0 +1,28 @@
+@use "sass:color";
+@use '@/styles/index' as *;
+
+.card.log {
+    > .log-content {
+        padding: 24px;
+        height: calc(100vh - 380px);
+        min-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    ul#log {
+        font-family: monospace, monospace;
+        margin: 0;
+        padding: 0;
+        white-space: pre-wrap;
+        list-style: none;
+
+        > li {
+            list-style: none;
+            display: block;
+            min-height: 23px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    }
+}

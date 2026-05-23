@@ -1,0 +1,90 @@
+@use "sass:color";
+@use '@/styles/index' as *;
+
+.card.downloads {
+    section#downloads {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 24px;
+    }
+
+    .download-row {
+        display: grid;
+        gap: 10px;
+        grid-template:
+            "a . b" auto
+            "c c c" 24px
+            "d e f" auto / 33% 1fr 33%;
+
+        .name {
+            grid-area: a;
+            text-align: left;
+            font-size: 1.05rem;
+            padding: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .size {
+            grid-area: b;
+            text-align: right;
+            font-size: 1.05rem;
+            padding: 5px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .progress {
+            grid-area: c;
+            isolation: isolate;
+            position: relative;
+            padding: 4px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
+
+            > label {
+                position: absolute;
+                width: calc(100% - 8px);
+                height: 16px;
+                color: $base-color;
+                text-align: center;
+                mix-blend-mode: difference;
+                font-variant-numeric: tabular-nums;
+            }
+
+            > span {
+                height: 16px;
+                width: 0;
+                display: block;
+                background-color: $base-color;
+                border-radius: 4px;
+                background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+                transition: width 0.4s linear, background-color 0.4s linear;
+                box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        .elapsed {
+            grid-area: d;
+            text-align: center;
+            padding: 5px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .speed {
+            grid-area: e;
+            text-align: center;
+            padding: 5px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .eta {
+            grid-area: f;
+            text-align: center;
+            padding: 5px;
+            font-variant-numeric: tabular-nums;
+        }
+    }
+}

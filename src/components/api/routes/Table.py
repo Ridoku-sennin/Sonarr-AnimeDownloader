@@ -1,10 +1,12 @@
 from ...backend import Core
 
+import json
 from apiflask import APIBlueprint, abort, fields
+from flask import Response, request
 
 def Table(core:Core) -> APIBlueprint:
 	route = APIBlueprint('table', __name__, url_prefix='/table', tag='Table')
-	
+
 	@route.after_request
 	def cors(res):
 		res.headers['Access-Control-Allow-Origin'] = '*'
@@ -16,6 +18,32 @@ def Table(core:Core) -> APIBlueprint:
 	def get_table() -> list[dict]:
 		"""Restituisce la lista di elementi della tabella."""
 		return core.table.getData()
+
+	@route.get('/export')
+	def export_table():
+		"""Esporta la tabella come file table.json."""
+		return Response(
+			json.dumps(core.table.getData(), indent=4),
+			mimetype="application/json",
+			headers={"Content-Disposition": "attachment; filename=table.json"},
+		)
+
+	@route.post('/import')
+	def import_table():
+		"""Importa la tabella da un file table.json."""
+		uploaded_file = request.files.get('file')
+		if uploaded_file is None or uploaded_file.filename == '':
+			abort(400, "Nessun file caricato.")
+
+		try:
+			data = json.loads(uploaded_file.read().decode('utf-8'))
+		except (json.JSONDecodeError, UnicodeDecodeError):
+			abort(400, "Tabella invalida.")
+
+		if not core.table.setData(data):
+			abort(400, "Tabella invalida.")
+
+		return {"message": "Tabella importata."}
 	
 	@route.get('/<title>')
 	def get_serie(title:str):

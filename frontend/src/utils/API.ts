@@ -1,7 +1,7 @@
 export class API {
     backend: string;
     constructor(backend: string) {
-        this.backend = backend + '/api';
+        this.backend = backend.replace(/\/+$/, '') + '/api';
     }
 
     async getVersion(): Promise<string> {
@@ -22,7 +22,7 @@ export class API {
         return await res.json();
     }
 
-    async editSettings(setting:"AutoBind"|"LogLevel"|"MoveEp"|"RenameEp"|"ScanDelay"|"TagsMode", value:any): Promise<ResponseMsg>{
+    async editSettings(setting:"AutoBind"|"LogLevel"|"MaxParallelDownloads"|"MoveEp"|"RenameEp"|"ScanDelay"|"TagsMode", value:any): Promise<ResponseMsg>{
         const res = await fetch(encodeURI(this.backend + `/settings/${setting}`), {
             method: "PATCH",
             headers: {
@@ -71,6 +71,20 @@ export class API {
 
     async getTable(): Promise<SerieTableEntry[]> {
         const res = await fetch(this.backend + '/table/');
+        return await res.json();
+    }
+
+    getTableExportUrl(): string {
+        return this.backend + '/table/export';
+    }
+
+    async importTable(file: File): Promise<ResponseMsg> {
+        const formData = new FormData();
+        formData.append('file', file, file.name);
+        const res = await fetch(this.backend + '/table/import', {
+            method: "POST",
+            body: formData
+        });
         return await res.json();
     }
 
@@ -210,6 +224,11 @@ export class API {
         const res = await fetch(encodeURI(this.backend + `/log/${page}`));
         return await res.json();
     }
+
+    async getDownloads(): Promise<DownloadProgress[]> {
+        const res = await fetch(this.backend + '/downloads/');
+        return await res.json();
+    }
 }
 
 export interface SerieTableEntry {
@@ -226,13 +245,28 @@ export interface ResponseMsg {
     message: string
 }
 
-export interface SettingsOptions { 
+export interface SettingsOptions {
     AutoBind: boolean,
-    LogLevel: "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL", 
+    LogLevel: "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL",
+    MaxParallelDownloads: number,
     MoveEp: boolean,
     RenameEp: boolean,
     ScanDelay: number,
     TagsMode: "BLACKLIST" | "WHITELIST"
+}
+
+export interface DownloadProgress {
+    title: string,
+    serie: string,
+    season: number | string,
+    episode: number,
+    filename?: string,
+    percentage: number,
+    downloaded_bytes?: number,
+    total_bytes?: number,
+    elapsed?: number,
+    eta?: number,
+    speed?: number
 }
 
 export interface TagValue {

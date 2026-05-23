@@ -1,10 +1,9 @@
 animeworld>=1.6.7
-fastapi==0.103.2
-uvicorn[standard]==0.34.0
 httpx==0.28.1
 apiflask
 tenacity==9.0.0
 
 flask==3.1.0
 flask_socketio
+simple-websocket
 werkzeug>=3.0.6

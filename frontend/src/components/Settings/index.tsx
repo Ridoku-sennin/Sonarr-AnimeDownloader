@@ -119,6 +119,20 @@ function SettingCard({ api }: SettingsProps) {
 
                     </fieldset>
 
+                    <fieldset>
+                        <legend>Download Paralleli</legend>
+                        <div>
+                            <input type="number" name="MaxParallelDownloads" id="MaxParallelDownloads" placeholder="5" min="1" max="10" step="1" value={settings.MaxParallelDownloads} onChange={e => {
+                                if (e.target.checkValidity()) {
+                                    setSettings({ ...settings, MaxParallelDownloads: e.target.valueAsNumber });
+                                    api.editSettings("MaxParallelDownloads", e.target.valueAsNumber)
+                                        .then(res => toast.success(res.message));
+                                }
+                            }} />
+                        </div>
+
+                    </fieldset>
+
                     <button onClick={() => {
                         api.putWekeup()
                             .then(res => toast(res.message));

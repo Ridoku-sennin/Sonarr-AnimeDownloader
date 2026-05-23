@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Container, Navigator, Settings } from '@/components';
 
 import { API } from '@/utils/API';
-import { ToastContainer } from '@/helper';
+import { ToastContainer, toast } from '@/helper';
 
 import './style.scss';
 
@@ -12,7 +12,7 @@ export default function App() {
     const [version, setVersion] = useState('');
     const [navActive, setNavActive] = useState(false);
 
-    const api = new API('http://127.0.0.1:5000');
+    const api = new API(BACKEND);
 
     useEffect(() => {
         api.getVersion().then(res => setVersion(res));
@@ -31,6 +31,7 @@ export default function App() {
             title='Settings'
             version={version}
             navigatorState={[navActive, setNavActive]}
+            onRescan={() => api.putWekeup().then(res => toast(res.message))}
         >
            <Settings api={api}/>
         </Container>

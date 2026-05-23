@@ -1,17 +1,14 @@
 #!/usr/bin/python3
 from components import Core, API
 
-from components.frontend_OLD import Frontend
-
 import threading
 
 def main():
 	# Carico il core
 	core = Core()
-	
-	# Cario la pagina web
-	# app = API(core)
-	app = Frontend(core) # DEPRECATO (DA RIMUOVERE)
+
+	# Cario la pagina web (nuovo API + React frontend)
+	app = API(core)
 
 	# Avvio la pagina web
 	threading.Thread(target=server, args=[app], daemon=True).start()
@@ -23,7 +20,12 @@ def main():
 	core.join()
 
 def server(app):
-	app.run(debug=False, host='0.0.0.0', use_reloader=False)
+	# Usa socketio.run se disponibile (push real-time del log)
+	socketio = getattr(app, 'socketio', None)
+	if socketio:
+		socketio.run(app, debug=False, host='0.0.0.0', use_reloader=False, allow_unsafe_werkzeug=True)
+	else:
+		app.run(debug=False, host='0.0.0.0', use_reloader=False)
 
 if __name__ == '__main__':
 	main()

@@ -76,7 +76,7 @@ function SerieAddModal({api, onUpdate}:SerieAddModalProps){
         <Modal
             activationState={[modalActive, setModalActive]}
         >
-            <form onSubmit={submit}>
+            <form action="javascript:void(0)" onSubmit={submit}>
                 <div>
                     <input type="text" name="title" id="title" placeholder="Sword Art Online" required onChange={(e) => setInfo({...info, title: e.target.value})}/>
                     <label htmlFor="title">Nome Anime</label>
@@ -175,10 +175,11 @@ function TableEntry({ api, entry, onUpdate }: TableEntryProps) {
             <Tabs
                 labels={Object.keys(entry.seasons).map(season =>
                     <EditableNode
+                        key={season}
                         type='text'
                         defaultValue={season}
                         activationState={[
-                            editSeasons[season],
+                            editSeasons[season] ?? false,
                             (state: boolean) => setEditSasons({ ...editSeasons, [season]: state })
                         ]}
                         onSubmit={(content) => {
@@ -220,10 +221,10 @@ function TableEntry({ api, entry, onUpdate }: TableEntryProps) {
                             type='text'
                             defaultValue={link}
                             activationState={[
-                                editLinks[season][link],
+                                editLinks[season]?.[link] ?? false,
                                 (state: boolean) => setEditLinks({
                                     ...editLinks, [season]: {
-                                        ...editLinks[season], [link]: state
+                                        ...(editLinks[season] ?? {}), [link]: state
                                     }
                                 })
                             ]}
@@ -242,7 +243,7 @@ function TableEntry({ api, entry, onUpdate }: TableEntryProps) {
                                     'Copy': () => navigator.clipboard.writeText(link),
                                     'Edit': () => setEditLinks({
                                         ...editLinks, [season]: {
-                                            ...editLinks[season], [link]: true
+                                            ...(editLinks[season] ?? {}), [link]: true
                                         }
                                     }),
                                     'Delete': () => {
@@ -348,13 +349,7 @@ function EditableNode<T extends string | number>({ type, defaultValue, activatio
         return children;
     } else {
         return (
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    onSubmit(content);
-                    reset();
-                }}
-            >
+            <span className='editable'>
                 <input
                     autoFocus={true}
                     type={type}
@@ -364,11 +359,21 @@ function EditableNode<T extends string | number>({ type, defaultValue, activatio
 
                     onChange={e => setContent(e.target.value as T)}
 
-                    onBlur={reset}
-                    onKeyDown={e => e.key == 'Escape' && reset()}
-                />
-            </form>
+                    onBlur={() => { if (!content) reset(); }}
 
+                    onKeyDown={e => {
+                        if (e.key === 'Escape') {
+                            reset();
+                        } else if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (e.currentTarget.checkValidity()) {
+                                onSubmit(content);
+                                reset();
+                            }
+                        }
+                    }}
+                />
+            </span>
         );
     }
 
